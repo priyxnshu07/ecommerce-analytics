@@ -1,0 +1,16 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Raw data is downloaded by scripts/download_data.py (not committed)
+data/raw/
+
+# Local database file (rebuilt by the pipeline)
+*.duckdb
+*.duckdb.wal
+
+# OS / editor
+.DS_Store
+.vscode/
