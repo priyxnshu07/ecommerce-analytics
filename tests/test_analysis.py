@@ -46,3 +46,19 @@ def test_rfm_segments_cover_every_customer_once(con):
     customers = q(con, "03_repeat_customers")["customers"].iloc[0]
     assert rfm["customers"].sum() == customers
     assert rfm["pct_gmv"].sum() == pytest.approx(100, abs=0.2)
+
+
+@pytest.mark.parametrize("path", sorted(SQL_DIR.glob("*.sql")), ids=lambda p: p.stem)
+def test_every_query_is_deterministic(path: Path):
+    # Window functions like NTILE split ties arbitrarily unless the ORDER BY is
+    # total; a fresh connection must give exactly the same result.
+    first = run_query(connect(), path)
+    second = run_query(connect(), path)
+    assert first.equals(second)
+
+
+def test_late_orders_are_overrepresented_in_low_reviews(con):
+    impact = q(con, "02c_late_delivery_impact").iloc[0]
+    assert 0 < impact["late_share_of_orders_pct"] < impact["share_of_low_reviews_from_late_pct"] < 100
+    # The what-if can only remove low reviews, never add them.
+    assert impact["low_reviews_if_on_time"] < impact["low_reviews_now"]

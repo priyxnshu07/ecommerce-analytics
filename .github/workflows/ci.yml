@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - run: pip install -r requirements.txt
+      # Data-quality checks and every SQL query, against the committed Parquet files
+      - run: pytest -q
+      # Results committed in reports/results must match what the SQL produces now
+      - run: python -m src.analysis && git diff --exit-code reports/results

@@ -3,6 +3,7 @@
 -- Frequency = number of orders, Monetary = total GMV.
 -- R and M are scored 1-5 by quintile. F is scored by order count, because
 -- ~97% of customers ordered once, so F quintiles would be meaningless.
+-- Ties are broken by customer id so the quintile split is deterministic.
 WITH c AS (
     SELECT customer_unique_id,
            DATE_DIFF('day', MAX(purchase_ts)::DATE, DATE '2018-09-01') AS recency_days,
@@ -12,9 +13,9 @@ WITH c AS (
 ),
 scored AS (
     SELECT *,
-           NTILE(5) OVER (ORDER BY recency_days DESC)               AS r,
+           NTILE(5) OVER (ORDER BY recency_days DESC, customer_unique_id)               AS r,
            CASE WHEN frequency >= 3 THEN 3 WHEN frequency = 2 THEN 2 ELSE 1 END AS f,
-           NTILE(5) OVER (ORDER BY monetary)                         AS m
+           NTILE(5) OVER (ORDER BY monetary, customer_unique_id)                       AS m
     FROM c
 ),
 segmented AS (
