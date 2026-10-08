@@ -2,7 +2,7 @@
 
 End-to-end analysis of ~100,000 real orders from Olist, a Brazilian e-commerce marketplace (2016–2018): data cleaning in SQL, business analysis, an interactive dashboard and recommendations.
 
-> Work in progress. Step 1 (data pipeline) is done; analysis, dashboard and insights are next.
+> Work in progress. Data pipeline and SQL analysis are done; dashboard and insights memo are next.
 
 ## Reproduce
 
@@ -11,8 +11,19 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python scripts/download_data.py   # raw CSVs, pinned to a fixed commit
 python -m src.etl                 # clean tables -> data/processed/*.parquet
-pytest                            # 11 data-quality checks
+python -m src.analysis            # run sql/*.sql -> reports/results/*.csv
+pytest                            # data-quality + analysis checks
 ```
+
+## Business questions
+
+| # | Question | Query |
+| --- | --- | --- |
+| 1 | How are orders and revenue trending? | [`sql/01_monthly_revenue.sql`](sql/01_monthly_revenue.sql) |
+| 2 | Do late deliveries hurt reviews, and by how much? | [`sql/02_delivery_vs_reviews.sql`](sql/02_delivery_vs_reviews.sql) |
+| 3 | Do customers come back? | [`sql/03_repeat_customers.sql`](sql/03_repeat_customers.sql), [`sql/03b_cohort_retention.sql`](sql/03b_cohort_retention.sql) |
+| 4 | Which categories and sellers drive revenue? | [`sql/04_category_pareto.sql`](sql/04_category_pareto.sql), [`sql/04b_seller_concentration.sql`](sql/04b_seller_concentration.sql) |
+| 5 | Which customer segments matter most? (RFM) | [`sql/05_rfm_segments.sql`](sql/05_rfm_segments.sql) |
 
 ## Data cleaning decisions
 

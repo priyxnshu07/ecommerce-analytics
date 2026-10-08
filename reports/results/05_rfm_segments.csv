@@ -1,0 +1,8 @@
+segment,customers,pct_customers,gmv,pct_gmv,avg_recency_days,avg_spend
+New big spenders,14728,15.6,3938907.17,29.3,95.0,267.44
+Lost big spenders,13904,14.7,3871843.77,28.8,395.0,278.47
+Needs attention,18327,19.4,2391284.62,17.8,223.0,130.48
+Lost,22946,24.2,1283776.53,9.5,396.0,55.95
+New customers,21924,23.2,1216592.87,9.0,92.0,55.49
+"Loyal, lapsing",1646,1.7,415783.3,3.1,323.0,252.6
+Champions,1228,1.3,331341.42,2.5,91.0,269.82
