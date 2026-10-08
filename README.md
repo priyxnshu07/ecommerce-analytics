@@ -2,7 +2,7 @@
 
 End-to-end analysis of ~100,000 real orders from Olist, a Brazilian e-commerce marketplace (2016–2018): data cleaning in SQL, business analysis, an interactive dashboard and recommendations.
 
-> Work in progress. Data pipeline and SQL analysis are done; dashboard and insights memo are next.
+> Work in progress. Pipeline, SQL analysis and dashboard are done; the insights memo is next.
 
 ## Reproduce
 
@@ -13,6 +13,7 @@ python scripts/download_data.py   # raw CSVs, pinned to a fixed commit
 python -m src.etl                 # clean tables -> data/processed/*.parquet
 python -m src.analysis            # run sql/*.sql -> reports/results/*.csv
 pytest                            # data-quality + analysis checks
+streamlit run app.py              # interactive dashboard at http://localhost:8501
 ```
 
 ## Business questions

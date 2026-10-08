@@ -25,10 +25,30 @@ REVENUE_ORDERS = """
 """
 
 
-def connect() -> duckdb.DuckDBPyConnection:
+def connect(start_month: str | None = None, end_month: str | None = None,
+            states: list[str] | None = None) -> duckdb.DuckDBPyConnection:
+    """Open DuckDB with the views every query uses.
+
+    The optional filters narrow the `orders` view (and so everything built on
+    it). The dashboard uses them to run the same sql/*.sql files on a filtered
+    slice, so the analysis and the dashboard can never disagree.
+    """
     con = duckdb.connect()
-    con.execute(f"CREATE VIEW orders AS SELECT * FROM '{(PROCESSED / 'orders.parquet').as_posix()}'")
+    con.execute(f"CREATE VIEW all_orders AS SELECT * FROM '{(PROCESSED / 'orders.parquet').as_posix()}'")
     con.execute(f"CREATE VIEW order_items AS SELECT * FROM '{(PROCESSED / 'order_items.parquet').as_posix()}'")
+
+    where, params = ["TRUE"], []
+    if start_month:
+        where.append("purchase_month >= ?::DATE")
+        params.append(start_month)
+    if end_month:
+        where.append("purchase_month <= ?::DATE")
+        params.append(end_month)
+    if states:
+        where.append("list_contains(?, customer_state)")
+        params.append(list(states))
+    # Views can't hold bind parameters, so materialise the filtered slice.
+    con.execute(f"CREATE TABLE orders AS SELECT * FROM all_orders WHERE {' AND '.join(where)}", params)
     con.execute(REVENUE_ORDERS)
     return con
 
