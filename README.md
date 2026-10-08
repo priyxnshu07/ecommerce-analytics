@@ -2,6 +2,8 @@
 
 End-to-end analysis of ~100,000 real orders from Olist, a Brazilian e-commerce marketplace (2016–2018): data cleaning in SQL, business analysis, an interactive dashboard and recommendations.
 
+**[▶ Live dashboard](https://list-ecommerce-analytics.streamlit.app/)**
+
 > Work in progress. Pipeline, SQL analysis and dashboard are done; the insights memo is next.
 
 ## Reproduce
